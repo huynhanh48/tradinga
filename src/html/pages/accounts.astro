@@ -1,0 +1,150 @@
+---
+import Head from "@components/_head.astro"
+import Footer from "@components/dashboard/_footer.astro"
+import Topbar from "@components/dashboard/_topbar.astro"
+import Sidenav from "@components/dashboard/_sidenav.astro"
+import Scripts from "@components/_scripts.astro"
+
+const title = "Trading Accounts & Profiles | TradingA"
+const path = "../../dist"
+const page = "accounts"
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <Head title={title} path={path} />
+    <meta
+      name="description"
+      content="Manage trading accounts and profiles without complex authentication."
+    />
+    <style is:global>
+      .journal-status {
+        min-height: 1.5rem;
+      }
+    </style>
+  </head>
+  <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+    <div class="app-wrapper">
+      <Topbar path={path} />
+      <Sidenav path={path} page={page} />
+      <main class="app-main">
+        <div class="app-content-header">
+          <div class="container-fluid">
+            <div class="row align-items-center">
+              <div class="col-sm-6">
+                <h1 class="mb-0 fs-3">Trading Accounts &amp; Profiles</h1>
+              </div>
+              <div class="col-sm-6">
+                <div class="d-flex align-items-center justify-content-sm-end gap-2 mt-2 mt-sm-0">
+                  <!-- Account Selector (Multi-Profile) -->
+                  <div class="input-group input-group-sm" style="max-width: 250px;">
+                    <span class="input-group-text bg-primary text-white">
+                      <i class="bi bi-person-circle"></i>
+                    </span>
+                    <select class="form-select fw-semibold" id="account-selector" aria-label="Select Trading Account">
+                      <option value="00000000-0000-4000-8000-000000000001">Primary Account</option>
+                    </select>
+                  </div>
+                  <nav aria-label="Breadcrumb" class="d-none d-md-block">
+                    <ol class="breadcrumb mb-0">
+                      <li class="breadcrumb-item"><a href="./">Trading Journal</a></li>
+                      <li class="breadcrumb-item active" aria-current="page">Accounts</li>
+                    </ol>
+                  </nav>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="app-content">
+          <div class="container-fluid">
+            <div
+              class="journal-status small mb-2"
+              id="status-message"
+              role="status"
+              aria-live="polite"
+            ></div>
+
+            <div class="row g-4">
+              <!-- Create New Account Form (AdminLTE Form Validation Pattern) -->
+              <div class="col-12 col-lg-5">
+                <div class="card card-primary card-outline shadow-sm">
+                  <div class="card-header bg-body">
+                    <h3 class="card-title fw-bold">
+                      <i class="bi bi-person-plus-fill me-1"></i> Add Trading Account
+                    </h3>
+                  </div>
+                  <form id="new-account-form" class="needs-validation" novalidate>
+                    <div class="card-body">
+                      <div class="mb-3">
+                        <label for="accountNameInput" class="form-label fw-semibold">Account / Prop Firm Name</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="accountNameInput"
+                          placeholder="e.g. FTMO 100k, MFF, IC Markets..."
+                          required
+                          minlength="2"
+                          maxlength="60"
+                        />
+                        <div class="valid-feedback">Looks good!</div>
+                        <div class="invalid-feedback">Please enter an account name (min 2 characters).</div>
+                      </div>
+                      <div class="mb-3">
+                        <label for="accountNotesInput" class="form-label text-secondary">Strategy notes (optional)</label>
+                        <textarea
+                          class="form-control"
+                          id="accountNotesInput"
+                          rows="2"
+                          placeholder="e.g. Scalping M5, Risk 1% per trade..."
+                        ></textarea>
+                      </div>
+                    </div>
+                    <div class="card-footer bg-body text-end">
+                      <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save me-1"></i> Save Account
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+
+              <!-- Accounts List -->
+              <div class="col-12 col-lg-7">
+                <div class="card shadow-sm border">
+                  <div class="card-header bg-body">
+                    <h3 class="card-title fw-bold">
+                      <i class="bi bi-list-check me-1"></i> Your Accounts
+                    </h3>
+                  </div>
+                  <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                      <thead class="table-light">
+                        <tr>
+                          <th>Account Name</th>
+                          <th>Created</th>
+                          <th>Status</th>
+                          <th class="text-end">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody id="accounts-table-body">
+                        <!-- Filled by JS -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </main>
+      <Footer />
+    </div>
+
+    <Scripts path={path} />
+    <script src="../scripts/trading-journal.ts"></script>
+  </body>
+</html>

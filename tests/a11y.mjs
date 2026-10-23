@@ -29,6 +29,7 @@ const PAGES = [
   '/tables/data.html',
   '/charts/chartjs.html',
   '/starter.html',
+  '/trading-journal.html',
   '/users.html',
   '/examples/login.html',
   '/examples/forgot-password.html',

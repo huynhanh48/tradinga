@@ -94,6 +94,24 @@ or copy one of the demo pages.
 2. **Start the dev server:** `npm start` *(opens http://localhost:3000 with live reload)*
 3. **Build:** `npm run build` — or `npm run production` for the full lint + test + optimize + bundle-size pipeline
 
+### Trading Journal
+
+This checkout also includes a Pips journal at `/trading-journal.html`. Create a PostgreSQL
+database, copy `.env.example` to `.env`, and set `DATABASE_URL` to that database. The API
+creates the journal tables and a default user the first time it starts:
+
+```bash
+createdb trading_journal
+cp .env.example .env
+npm start
+```
+
+Open [http://localhost:3000/trading-journal.html](http://localhost:3000/trading-journal.html).
+For a built deployment, run `npm run build` and then `npm run journal-api`; Express serves the
+generated site and API together on port 3001. The initial journal uses the configured
+`JOURNAL_USER_ID` and has no sign-in, so keep it on a trusted/private network until
+authentication is added.
+
 <details>
 <summary>All npm scripts</summary>
 

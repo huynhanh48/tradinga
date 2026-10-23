@@ -63,6 +63,9 @@ export default defineConfig({
       host: '0.0.0.0',
       watch: {
         ignored: ['!**/dist/**']
+      },
+      proxy: {
+        '/api': 'http://localhost:3002'
       }
     }
   }

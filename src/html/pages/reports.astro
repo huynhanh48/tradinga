@@ -1,0 +1,319 @@
+---
+import Head from "@components/_head.astro"
+import Footer from "@components/dashboard/_footer.astro"
+import Topbar from "@components/dashboard/_topbar.astro"
+import Sidenav from "@components/dashboard/_sidenav.astro"
+import Scripts from "@components/_scripts.astro"
+
+const title = "Periodic Reports | TradingA"
+const path = "../../dist"
+const page = "reports"
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <Head title={title} path={path} />
+    <meta
+      name="description"
+      content="Periodic trading performance reports by week, month, quarter, and year."
+    />
+    <style is:global>
+      .journal-chart {
+        width: 100%;
+        height: 180px;
+        max-height: 200px;
+      }
+      .journal-status {
+        min-height: 1.5rem;
+      }
+      .progress-xs {
+        height: 7px;
+      }
+    </style>
+  </head>
+  <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+    <div class="app-wrapper">
+      <Topbar path={path} />
+      <Sidenav path={path} page={page} />
+      <main class="app-main">
+        <div class="app-content-header">
+          <div class="container-fluid">
+            <div class="row align-items-center">
+              <div class="col-sm-6">
+                <h1 class="mb-0 fs-3">Periodic Performance Reports</h1>
+              </div>
+              <div class="col-sm-6">
+                <div class="d-flex align-items-center justify-content-sm-end gap-2 mt-2 mt-sm-0">
+                  <!-- Account Selector (Multi-Profile) -->
+                  <div class="input-group input-group-sm" style="max-width: 250px;">
+                    <span class="input-group-text bg-primary text-white">
+                      <i class="bi bi-person-circle"></i>
+                    </span>
+                    <select class="form-select fw-semibold" id="account-selector" aria-label="Select Trading Account">
+                      <option value="00000000-0000-4000-8000-000000000001">Primary Account</option>
+                    </select>
+                  </div>
+                  <nav aria-label="Breadcrumb" class="d-none d-md-block">
+                    <ol class="breadcrumb mb-0">
+                      <li class="breadcrumb-item"><a href="./">Trading Journal</a></li>
+                      <li class="breadcrumb-item active" aria-current="page">Periodic Reports</li>
+                    </ol>
+                  </nav>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="app-content">
+          <div class="container-fluid">
+            <div
+              class="journal-status small mb-2"
+              id="status-message"
+              role="status"
+              aria-live="polite"
+            ></div>
+
+            <div class="card shadow-sm border mb-3">
+              <div class="card-body py-2">
+                <div class="d-flex flex-wrap align-items-end gap-2">
+                  <div>
+                    <label class="form-label fw-semibold small mb-1" for="report-period">
+                      Group by
+                    </label>
+                    <select class="form-select form-select-sm" id="report-period">
+                      <option value="week" selected>Week</option>
+                      <option value="month">Month</option>
+                      <option value="quarter">Quarter</option>
+                      <option value="year">Year</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="form-label fw-semibold small mb-1" for="report-year">
+                      Year
+                    </label>
+                    <input
+                      class="form-control form-control-sm"
+                      type="number"
+                      id="report-year"
+                      min="2000"
+                      max="2100"
+                    />
+                  </div>
+                  <button class="btn btn-sm btn-primary" type="button" id="report-load">
+                    <i class="bi bi-arrow-repeat me-1"></i> View Report
+                  </button>
+                  <button
+                    class="btn btn-sm btn-outline-primary fw-semibold"
+                    type="button"
+                    id="btn-compare-periods"
+                    data-bs-toggle="modal"
+                    data-bs-target="#comparePeriodsModal"
+                  >
+                    <i class="bi bi-bar-chart-fill me-1"></i> Compare Periods
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dynamic Period Performance Comparison Section (Hidden initially until user triggers 'Compare Periods') -->
+            <div class="card mb-4 shadow-sm border d-none" id="period-comparison-card">
+              <div class="card-header bg-body d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <div class="d-flex align-items-center gap-2">
+                  <h2 class="card-title fw-bold fs-5 mb-0" id="period-compare-title">
+                    <i class="bi bi-bar-chart-line-fill text-primary me-2"></i>Weekly Performance Comparison
+                  </h2>
+                  <span class="badge text-bg-primary-subtle text-primary border border-primary-subtle" id="period-compare-badge">
+                    Period Comparison
+                  </span>
+                </div>
+                <div class="small text-secondary ms-auto text-end" id="period-compare-subtitle">
+                  Performance comparison across recent periods
+                </div>
+              </div>
+              <div class="card-body">
+                <!-- Comparison KPI summary cards -->
+                <div class="row g-3 mb-3" id="period-compare-kpis">
+                  <div class="col-6 col-md-3">
+                    <div class="p-3 rounded border bg-body-tertiary">
+                      <div class="small text-secondary fw-semibold mb-1" id="pc-kpi-1-title">Most Recent Period</div>
+                      <div class="fs-5 fw-bold text-success" id="pc-kpi-1-pips">+0.00 Pips</div>
+                      <div class="small text-muted" id="pc-kpi-1-sub">Win Rate: —</div>
+                    </div>
+                  </div>
+                  <div class="col-6 col-md-3">
+                    <div class="p-3 rounded border bg-body-tertiary">
+                      <div class="small text-secondary fw-semibold mb-1" id="pc-kpi-2-title">vs Prior Period</div>
+                      <div class="fs-5 fw-bold text-primary" id="pc-kpi-2-diff">—</div>
+                      <div class="small text-muted" id="pc-kpi-2-sub">—</div>
+                    </div>
+                  </div>
+                  <div class="col-6 col-md-3">
+                    <div class="p-3 rounded border bg-body-tertiary">
+                      <div class="small text-secondary fw-semibold mb-1" id="pc-kpi-3-title">Best Period</div>
+                      <div class="fs-5 fw-bold text-success" id="pc-kpi-3-best">—</div>
+                      <div class="small text-muted" id="pc-kpi-3-sub">—</div>
+                    </div>
+                  </div>
+                  <div class="col-6 col-md-3">
+                    <div class="p-3 rounded border bg-body-tertiary">
+                      <div class="small text-secondary fw-semibold mb-1" id="pc-kpi-4-title">Period Average</div>
+                      <div class="fs-5 fw-bold text-dark" id="pc-kpi-4-avg">+0.00 Pips</div>
+                      <div class="small text-muted" id="pc-kpi-4-sub">—</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Two Comparison Charts -->
+                <div class="row g-3">
+                  <div class="col-12 col-lg-7">
+                    <div class="card shadow-none border mb-0">
+                      <div class="card-header bg-body py-2 d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold small" id="pc-chart-1-title">Net Pips Across Periods</span>
+                      </div>
+                      <div class="card-body p-2">
+                        <svg
+                          id="period-compare-pips-chart"
+                          class="journal-chart"
+                          style="height: 190px; width: 100%;"
+                          role="img"
+                          aria-label="Net pips across periods"
+                        ></svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-lg-5">
+                    <div class="card shadow-none border mb-0">
+                      <div class="card-header bg-body py-2 d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold small" id="pc-chart-2-title">Win Rate Trend (%)</span>
+                        <span class="badge text-bg-light border text-secondary small">Trendline &amp; 50% Benchmark</span>
+                      </div>
+                      <div class="card-body p-2">
+                        <svg
+                          id="period-compare-winrate-chart"
+                          class="journal-chart"
+                          style="height: 190px; width: 100%;"
+                          role="img"
+                          aria-label="Win rate trend across periods"
+                        ></svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Comparison Chart -->
+            <div class="card mb-4 shadow-sm border">
+              <div class="card-header bg-body d-flex justify-content-between align-items-center">
+                <h2 class="card-title fw-bold fs-5 mb-0" id="report-chart-title">Performance &amp; Pips Chart</h2>
+                <span class="badge text-bg-light border text-secondary" id="report-chart-subtitle">Periodic Overview</span>
+              </div>
+              <div class="card-body">
+                <svg
+                  id="report-chart"
+                  class="journal-chart"
+                  role="img"
+                  aria-label="Periodic performance chart"
+                ></svg>
+              </div>
+            </div>
+
+            <!-- Data Table / Simple Table with Progress Bars & Pagination -->
+            <div class="card shadow-sm border">
+              <div class="card-header bg-body d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <h2 class="card-title fw-bold fs-5 mb-0">Periodic Detailed Statistics</h2>
+                <div class="d-flex align-items-center gap-2 ms-auto">
+                  <span class="badge text-bg-light border text-primary fw-bold fs-6 py-2 px-3" id="report-active-info">
+                    Current Period
+                  </span>
+                  <span class="badge text-bg-primary fs-6 py-2 px-3" id="report-total-badge">0 periods</span>
+                </div>
+              </div>
+              <div class="table-responsive" tabindex="0">
+                <table class="table table-hover table-bordered align-middle mb-0 text-center">
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col">Report Period</th>
+                      <th scope="col">Total Trades</th>
+                      <th scope="col">Win / Loss</th>
+                      <th scope="col" style="min-width: 140px;">Win Rate Progress</th>
+                      <th scope="col">Expectancy (Pips)</th>
+                      <th scope="col">Net Pips</th>
+                      <th scope="col">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="report-rows"></tbody>
+                </table>
+              </div>
+              <div class="card-footer bg-body d-flex flex-wrap align-items-center justify-content-between gap-2 py-2">
+                <div class="small text-secondary" id="report-pagination-info">
+                  Loading data...
+                </div>
+                <nav aria-label="Report pagination" class="ms-auto">
+                  <ul class="pagination pagination-sm mb-0 justify-content-end" id="report-pagination"></ul>
+                </nav>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Modal Chọn Kỳ So Sánh -->
+        <div class="modal fade" id="comparePeriodsModal" tabindex="-1" aria-labelledby="comparePeriodsModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow border-0">
+              <div class="modal-header bg-body-tertiary border-bottom py-2">
+                <h5 class="modal-title fw-bold fs-6" id="comparePeriodsModalLabel">
+                  <i class="bi bi-bar-chart-fill text-primary me-2"></i>Select Comparison Period
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body p-3">
+                <form id="compare-periods-form">
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold small mb-1" for="modal-compare-period">
+                      Period Group
+                    </label>
+                    <select class="form-select form-select-sm" id="modal-compare-period">
+                      <option value="week" selected>Week (Compare between weeks)</option>
+                      <option value="month">Month (Compare between months)</option>
+                      <option value="quarter">Quarter (Compare between quarters)</option>
+                      <option value="year">Year (Compare between years)</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold small mb-1" for="modal-compare-year">
+                      Trading Year
+                    </label>
+                    <input
+                      class="form-control form-control-sm"
+                      type="number"
+                      id="modal-compare-year"
+                      min="2000"
+                      max="2100"
+                    />
+                  </div>
+                  <div class="small text-secondary">
+                    The system aggregates the 10 most recent periods of the selected type, visualizing Net Pips and Win Rate trends for clear comparison.
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer bg-body-tertiary py-2">
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-sm btn-primary px-3 fw-semibold" id="btn-submit-compare">
+                  <i class="bi bi-bar-chart-line-fill me-1"></i> Start Comparison
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      <Footer />
+    </div>
+
+    <Scripts path={path} />
+    <script src="../scripts/trading-journal.ts"></script>
+  </body>
+</html>

@@ -46,7 +46,8 @@
   },
   "scripts": {
     "start": "npm run dev",
-    "dev": "npm-run-all --parallel watch docs-serve",
+    "dev": "npm-run-all --parallel watch docs-serve journal-api",
+    "journal-api": "node --env-file-if-exists=.env server/index.js",
     "build": "npm-run-all clean compile",
     "css": "npm-run-all css-compile css-prefix css-rtl css-minify",
     "css-compile": "sass --style expanded --load-path=\"node_modules\" --source-map --embed-sources --no-error-css --quiet-deps --silence-deprecation=import src/scss/:dist/css/",
@@ -165,5 +166,9 @@
     "typescript-eslint": "^8.71.1",
     "unist-util-visit": "^5.1.0",
     "vitest": "^5.0.3"
+  },
+  "dependencies": {
+    "express": "^5.3.0",
+    "pg": "^8.23.1"
   }
 }

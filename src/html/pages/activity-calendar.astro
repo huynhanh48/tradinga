@@ -1,0 +1,134 @@
+---
+import Head from "@components/_head.astro"
+import Footer from "@components/dashboard/_footer.astro"
+import Topbar from "@components/dashboard/_topbar.astro"
+import Sidenav from "@components/dashboard/_sidenav.astro"
+import Scripts from "@components/_scripts.astro"
+
+const title = "Trade Activity Calendar | TradingA"
+const path = "../../dist"
+const page = "activity-calendar"
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <Head title={title} path={path} />
+    <meta
+      name="description"
+      content="Interactive monthly trade activity calendar with profit/loss metrics."
+    />
+    <!-- FullCalendar CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@7.1.1/skeleton.css" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/bootstrap5@7.1.1/theme.css" crossorigin="anonymous" />
+
+    <style is:global>
+      #full-calendar-container .fc-daygrid-day-number {
+        font-weight: 600;
+      }
+      #full-calendar-container .fc-event {
+        cursor: pointer;
+        padding: 2px 4px;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+      /* In month view (dayGridMonth), hide timed trade items so only the daily summary badge is shown */
+      #full-calendar-container .fc-daygrid .fc-event-trade {
+        display: none !important;
+      }
+      /* In week view (timeGridWeek), style the timed trade events nicely */
+      #full-calendar-container .fc-timegrid .fc-event-trade {
+        display: block !important;
+        border-radius: 4px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+        padding: 2px 4px;
+        font-size: 0.75rem;
+      }
+      #full-calendar-container .fc-toolbar-chunk {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+    </style>
+  </head>
+  <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+    <div class="app-wrapper">
+      <Topbar path={path} />
+      <Sidenav path={path} page={page} />
+      <main class="app-main">
+        <div class="app-content-header">
+          <div class="container-fluid">
+            <div class="row align-items-center">
+              <div class="col-sm-6">
+                <h1 class="mb-0 fs-3">Trade Activity Calendar</h1>
+              </div>
+              <div class="col-sm-6">
+                <div class="d-flex align-items-center justify-content-sm-end gap-2 mt-2 mt-sm-0">
+                  <!-- Account Selector (Multi-Profile) -->
+                  <div class="input-group input-group-sm" style="max-width: 250px;">
+                    <span class="input-group-text bg-primary text-white">
+                      <i class="bi bi-person-circle"></i>
+                    </span>
+                    <select class="form-select fw-semibold" id="account-selector" aria-label="Select Trading Account">
+                      <option value="00000000-0000-4000-8000-000000000001">Primary Account</option>
+                    </select>
+                  </div>
+                  <nav aria-label="Breadcrumb" class="d-none d-md-block">
+                    <ol class="breadcrumb mb-0">
+                      <li class="breadcrumb-item"><a href="./">Trading Journal</a></li>
+                      <li class="breadcrumb-item active" aria-current="page">Activity Calendar</li>
+                    </ol>
+                  </nav>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="app-content">
+          <div class="container-fluid">
+            <div class="card shadow-sm border">
+              <div class="card-header bg-body d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <div class="d-flex align-items-center gap-3">
+                  <h2 class="card-title fw-bold fs-5 mb-0">Monthly &amp; Annual Trade Activity</h2>
+                  <div class="d-flex align-items-center gap-2">
+                    <input
+                      type="date"
+                      id="calendar-jump-date"
+                      class="form-control form-control-sm"
+                      style="width: 140px;"
+                      value="2026-10-23"
+                      aria-label="Select date"
+                    />
+                  </div>
+                </div>
+                <div class="d-flex align-items-center gap-2 ms-auto">
+                  <span class="badge text-bg-success">Profitable Day</span>
+                  <span class="badge text-bg-danger">Loss Day</span>
+                  <span class="badge text-bg-secondary">Break-even</span>
+                </div>
+              </div>
+              <div class="card-body p-3">
+                <div id="full-calendar-container" style="min-height: 650px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      <Footer />
+    </div>
+
+    <Scripts path={path} />
+    <!-- FullCalendar JS for activity view -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/fullcalendar@7.1.1/all/global.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@fullcalendar/bootstrap5@7.1.1/global.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="../scripts/trading-journal.ts"></script>
+  </body>
+</html>

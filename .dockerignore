@@ -1,0 +1,9 @@
+.git
+.github
+node_modules
+.astro
+.cache
+dist/html
+tests
+coverage
+*.log

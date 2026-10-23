@@ -39,7 +39,7 @@ const isDocsPage = pathname.includes("/docs/")
             </a>
           </li>
           <li class="nav-item d-none d-md-block">
-            <a href={htmlPath + "/index.html"} class="nav-link">
+            <a href={htmlPath === "." ? "./" : htmlPath + "/"} class="nav-link">
               <i class="bi bi-arrow-left me-1" aria-hidden="true" />
               Back to live preview
             </a>
@@ -47,7 +47,7 @@ const isDocsPage = pathname.includes("/docs/")
         </> :
         <>
           <li class="nav-item d-none d-md-block">
-            <a href={htmlPath + "/index.html"} class="nav-link">
+            <a href={htmlPath === "." ? "./" : htmlPath + "/"} class="nav-link">
               <i class="bi bi-grid-1x2 me-1" aria-hidden="true" />
               Live preview
             </a>

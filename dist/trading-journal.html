@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Weekly Trading Calendar | TradingA</title>
+
+<!--begin::Theme Init (prevents flash of incorrect theme on load, #6043)-->
+<script>
+  ;(() => {
+    "use strict"
+    const root = document.documentElement
+
+    // Applications with their own theming opt out of AdminLTE's color mode
+    // entirely, here as well as in the bundle.
+    if (root.getAttribute("data-lte-color-mode") === "off") {
+      return
+    }
+
+    const STORAGE_KEY = "lte-theme"
+    let stored = null
+    try {
+      stored = localStorage.getItem(STORAGE_KEY)
+    } catch {
+      // localStorage may be unavailable (private mode, sandboxed iframe).
+    }
+    // Mirror the precedence in color-mode.ts: the visitor's stored choice
+    // wins, then a theme this page declared itself, then the OS preference.
+    const authored = root.getAttribute("data-bs-theme")
+    let resolved = "light"
+    if (stored === "dark" || stored === "light") {
+      resolved = stored
+    } else if (authored === "dark" || authored === "light") {
+      resolved = authored
+    } else if (globalThis.matchMedia("(prefers-color-scheme: dark)").matches) {
+      resolved = "dark"
+    }
+    root.setAttribute("data-bs-theme", resolved)
+    root.style.colorScheme = resolved
+    // Flag values computed here, so the bundle does not mistake them for a
+    // theme the page declared and stop following the OS preference.
+    if (resolved !== authored) {
+      root.setAttribute("data-lte-theme-resolved", "")
+    }
+  })()
+</script>
+<!--end::Theme Init-->
+
+<!--begin::Accessibility Meta Tags-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#007bff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)">
+<!--end::Accessibility Meta Tags-->
+
+<!--begin::Primary Meta Tags-->
+<meta name="title" content="Weekly Trading Calendar | TradingA">
+<meta name="author" content="ColorlibHQ">
+<meta name="description" content="AdminLTE is a free Bootstrap 5 admin dashboard template with almost 50 example pages, built with vanilla JS and designed with accessibility in mind.">
+<meta name="keywords" content="bootstrap 5, bootstrap, bootstrap 5 admin dashboard, bootstrap 5 dashboard, bootstrap 5 charts, bootstrap 5 calendar, bootstrap 5 datepicker, bootstrap 5 tables, bootstrap 5 datatable, vanilla js datatable, colorlibhq, colorlibhq dashboard, colorlibhq admin dashboard, accessible admin panel">
+<!--end::Primary Meta Tags-->
+
+<!--begin::Accessibility Features-->
+<!-- Skip links will be dynamically added by accessibility.js -->
+<meta name="supported-color-schemes" content="light dark">
+<link rel="preload" href="./css/adminlte.css" as="style">
+<!--end::Accessibility Features-->
+
+<!--begin::Fonts-->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.3.0/index.css" integrity="sha256-5UwXtC6TaPHCAbVQ59waEAqOssHyhn/twyuLRRWszzo=" crossorigin="anonymous" media="print" onload="this.media='all'">
+<!--end::Fonts-->
+
+<!--begin::Third Party Plugin(OverlayScrollbars)-->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.16.0/styles/overlayscrollbars.min.css" crossorigin="anonymous">
+<!--end::Third Party Plugin(OverlayScrollbars)-->
+
+<!--begin::Third Party Plugin(Bootstrap Icons)-->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" crossorigin="anonymous">
+<!--end::Third Party Plugin(Bootstrap Icons)-->
+
+<!--begin::Required Plugin(AdminLTE)-->
+<link rel="stylesheet" href="./css/adminlte.css">
+<!--end::Required Plugin(AdminLTE)-->
+
+
+
+
+    <meta name="description" content="Weekly Pips trading calendar, trade logging, and live weekly statistics.">
+  <style>.journal-toolbar{gap:.5rem}.journal-day{background-color:var(--bs-card-bg);min-width:140px;height:100%;transition:background-color .15s ease-in-out}.journal-day.is-today{background:color-mix(in srgb, var(--bs-primary) 10%, var(--bs-body-bg));border:1px solid var(--bs-primary)!important}.journal-day-heading{border-bottom:1px dashed var(--bs-border-color);min-height:52px;padding-bottom:.35rem}.journal-trades{flex-direction:column;gap:.35rem;min-height:48px;display:flex}.journal-trade{background:var(--bs-tertiary-bg);border-radius:.25rem;justify-content:space-between;align-items:center;gap:.25rem;padding:.2rem .4rem;display:flex}.journal-trade-value{font-variant-numeric:tabular-nums;font-size:.95rem;font-weight:700;text-decoration:none!important}.journal-trade-value.is-win,.journal-positive{color:#198754!important}.journal-trade-value.is-loss,.journal-negative{color:#dc3545!important}.journal-day-total{font-variant-numeric:tabular-nums;font-size:1.05rem;font-weight:700}.journal-total-card{border-left:4px solid var(--bs-primary)}.journal-stat{border-bottom:1px solid var(--bs-border-color);justify-content:space-between;gap:.5rem;padding:.5rem 0;display:flex}.journal-stat strong{font-variant-numeric:tabular-nums;font-size:1rem}.journal-stat:last-child{border-bottom:0}.journal-status{min-height:1.5rem}.progress-xs{height:7px}@media (width<=575.98px){.journal-toolbar{align-items:stretch!important}.journal-toolbar .btn-group{width:100%}.journal-toolbar input[type=date]{flex:1}}@media print{@page{size:A4 portrait;margin:8mm}html,body{color:#000!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;background:#fff!important;width:100%!important;height:100%!important;margin:0!important;padding:0!important;overflow:hidden!important}.app-header,.app-sidebar,.app-footer,.app-content-header,.app-content,.modal,.modal-backdrop{display:none!important}#invoice-print-container{width:100%!important;margin:0!important;padding:0!important;display:block!important;position:static!important}#invoice-print-area{color:#000!important;page-break-inside:avoid!important;break-inside:avoid!important;background:#fff!important;width:100%!important;margin:0!important;padding:0!important;font-size:9.5pt!important;display:block!important;position:static!important}#invoice-print-area table,#invoice-print-area tr{page-break-inside:avoid!important;break-inside:avoid!important}}
+</style></head>
+  <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+    <div class="app-wrapper">
+      <!--begin::Header-->
+<nav class="app-header navbar navbar-expand bg-body">
+  <!--begin::Container-->
+  <div class="container-fluid">
+    <!--begin::Start Navbar Links-->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button" aria-label="Toggle sidebar">
+          <i class="bi bi-list"></i>
+        </a>
+      </li>
+      
+          <li class="nav-item d-none d-md-block">
+            <a href="./" class="nav-link">
+              <i class="bi bi-grid-1x2 me-1" aria-hidden="true"></i>
+              Live preview
+            </a>
+          </li>
+          <li class="nav-item d-none d-md-block">
+            <a href="./docs/introduction.html" class="nav-link">
+              <i class="bi bi-book me-1" aria-hidden="true"></i>
+              Documentation
+            </a>
+          </li>
+        
+    </ul>
+    <!--end::Start Navbar Links-->
+
+    <!--begin::Navbar Search-->
+    <form class="navbar-search d-none d-xl-block ms-3" role="search" action="./pages/search-results.html">
+      <label for="navbar-search-input" class="visually-hidden">Search</label>
+      <div class="navbar-search-field">
+        <input type="search" id="navbar-search-input" name="q" class="form-control" placeholder="Search…" autocomplete="off">
+        <button class="navbar-search-submit" type="submit" aria-label="Submit search">
+          <i class="bi bi-search" aria-hidden="true"></i>
+        </button>
+      </div>
+    </form>
+    <!--end::Navbar Search-->
+
+    <!--begin::End Navbar Links-->
+    <ul class="navbar-nav ms-auto">
+      <!--begin::Search (small screens: the field above is hidden, so link to the search page)-->
+      <li class="nav-item d-xl-none">
+        <a class="nav-link" href="./pages/search-results.html" aria-label="Search">
+          <i class="bi bi-search" aria-hidden="true"></i>
+        </a>
+      </li>
+      <!--end::Search-->
+      <!--begin::Messages Dropdown Menu-->
+      <li class="nav-item dropdown">
+        <a class="nav-link" data-bs-toggle="dropdown" href="#" aria-label="Messages: 3 unread">
+          <i class="bi bi-chat-text"></i>
+          <span class="navbar-badge badge text-bg-danger">3</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
+          <a href="#" class="dropdown-item">
+            <!--begin::Message-->
+            <div class="d-flex">
+              <div class="flex-shrink-0">
+                <img src="./assets/img/user1-128x128.jpg" alt="" class="img-size-50 rounded-circle me-3">
+              </div>
+              <div class="flex-grow-1">
+                <p class="dropdown-item-title">
+                  Brad Diesel
+                  <span class="float-end fs-7 text-danger"><i class="bi bi-star-fill"></i></span>
+                </p>
+                <p class="fs-7">Call me whenever you can...</p>
+                <p class="fs-7 text-secondary">
+                  <i class="bi bi-clock-fill me-1"></i> 4 Hours Ago
+                </p>
+              </div>
+            </div>
+            <!--end::Message-->
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item">
+            <!--begin::Message-->
+            <div class="d-flex">
+              <div class="flex-shrink-0">
+                <img src="./assets/img/user8-128x128.jpg" alt="" class="img-size-50 rounded-circle me-3">
+              </div>
+              <div class="flex-grow-1">
+                <p class="dropdown-item-title">
+                  John Pierce
+                  <span class="float-end fs-7 text-secondary">
+                    <i class="bi bi-star-fill"></i>
+                  </span>
+                </p>
+                <p class="fs-7">I got your message bro</p>
+                <p class="fs-7 text-secondary">
+                  <i class="bi bi-clock-fill me-1"></i> 4 Hours Ago
+                </p>
+              </div>
+            </div>
+            <!--end::Message-->
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item">
+            <!--begin::Message-->
+            <div class="d-flex">
+              <div class="flex-shrink-0">
+                <img src="./assets/img/user3-128x128.jpg" alt="" class="img-size-50 rounded-circle me-3">
+              </div>
+              <div class="flex-grow-1">
+                <p class="dropdown-item-title">
+                  Nora Silvester
+                  <span class="float-end fs-7 text-warning">
+                    <i class="bi bi-star-fill"></i>
+                  </span>
+                </p>
+                <p class="fs-7">The subject goes here</p>
+                <p class="fs-7 text-secondary">
+                  <i class="bi bi-clock-fill me-1"></i> 4 Hours Ago
+                </p>
+              </div>
+            </div>
+            <!--end::Message-->
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
+        </div>
+      </li>
+      <!--end::Messages Dropdown Menu-->
+
+      <!--begin::Notifications Dropdown Menu-->
+      <li class="nav-item dropdown">
+        <a class="nav-link" data-bs-toggle="dropdown" href="#" aria-label="Notifications: 15 unread">
+          <i class="bi bi-bell-fill"></i>
+          <span class="navbar-badge badge text-bg-warning">15</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
+          <span class="dropdown-item dropdown-header">15 Notifications</span>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item">
+            <i class="bi bi-envelope me-2"></i> 4 new messages
+            <span class="float-end text-secondary fs-7">3 mins</span>
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item">
+            <i class="bi bi-people-fill me-2"></i> 8 friend requests
+            <span class="float-end text-secondary fs-7">12 hours</span>
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item">
+            <i class="bi bi-file-earmark-fill me-2"></i> 3 new reports
+            <span class="float-end text-secondary fs-7">2 days</span>
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item dropdown-footer">
+            See All Notifications
+          </a>
+        </div>
+      </li>
+      <!--end::Notifications Dropdown Menu-->
+
+      <!--begin::Language Menu-->
+      <!-- Markup only: swapping the locale is the application's job. The docs
+           Recipes page shows how to wire this to a real locale switch. -->
+      <li class="nav-item dropdown">
+        <a class="nav-link" href="#" id="language-menu" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Change language, current language English">
+          <i class="bi bi-translate" aria-hidden="true"></i>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="language-menu">
+          <li>
+            <a class="dropdown-item active" href="#" hreflang="en" aria-current="true">
+              English
+              <i class="bi bi-check-lg ms-2" aria-hidden="true"></i>
+            </a>
+          </li>
+          <li><a class="dropdown-item" href="#" hreflang="es">Español</a></li>
+          <li><a class="dropdown-item" href="#" hreflang="fr">Français</a></li>
+          <li><a class="dropdown-item" href="#" hreflang="de">Deutsch</a></li>
+          <li><a class="dropdown-item" href="#" hreflang="ar">العربية</a></li>
+        </ul>
+      </li>
+      <!--end::Language Menu-->
+
+      <!--begin::Fullscreen Toggle-->
+      <li class="nav-item">
+        <a class="nav-link" href="#" data-lte-toggle="fullscreen" aria-label="Toggle fullscreen">
+          <i data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i>
+          <i data-lte-icon="minimize" class="bi bi-fullscreen-exit d-none"></i>
+        </a>
+      </li>
+      <!--end::Fullscreen Toggle-->
+
+      <!--begin::Color Mode Toggle (#6010)-->
+      <li class="nav-item dropdown">
+        <a class="nav-link" href="#" id="bd-theme" aria-label="Toggle color scheme" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-sun-fill" data-lte-theme-icon="light"></i>
+          <i class="bi bi-moon-fill d-none" data-lte-theme-icon="dark"></i>
+          <i class="bi bi-circle-half d-none" data-lte-theme-icon="auto"></i>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme" style="--bs-dropdown-min-width: 8rem;">
+          <li>
+            <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="false">
+              <i class="bi bi-sun-fill me-2"></i>
+              Light
+              <i class="bi bi-check-lg ms-auto d-none"></i>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark" aria-pressed="false">
+              <i class="bi bi-moon-fill me-2"></i>
+              Dark
+              <i class="bi bi-check-lg ms-auto d-none"></i>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="auto" aria-pressed="true">
+              <i class="bi bi-circle-half me-2"></i>
+              Auto
+              <i class="bi bi-check-lg ms-auto d-none"></i>
+            </button>
+          </li>
+        </ul>
+      </li>
+      <!--end::Color Mode Toggle-->
+
+      <!--begin::User Menu Dropdown-->
+      <li class="nav-item dropdown user-menu">
+        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+          <img src="./assets/img/user2-160x160.jpg" class="user-image rounded-circle shadow" alt="Alexander Pierce">
+          <span class="d-none d-xl-inline">Alexander Pierce</span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
+          <!--begin::User Image-->
+          <li class="user-header text-bg-primary">
+            <img src="./assets/img/user2-160x160.jpg" class="rounded-circle shadow" alt="Alexander Pierce">
+            <p>
+              Alexander Pierce - Web Developer
+              <small>Member since Nov. 2023</small>
+            </p>
+          </li>
+          <!--end::User Image-->
+          <!--begin::Menu Body-->
+          <li class="user-body">
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-4 text-center">
+                <a href="#">Followers</a>
+              </div>
+              <div class="col-4 text-center">
+                <a href="#">Sales</a>
+              </div>
+              <div class="col-4 text-center">
+                <a href="#">Friends</a>
+              </div>
+            </div>
+            <!--end::Row-->
+          </li>
+          <!--end::Menu Body-->
+          <!--begin::Menu Footer-->
+          <li class="user-footer">
+            <a href="#" class="btn btn-outline-secondary">Profile</a>
+            <a href="#" class="btn btn-outline-danger float-end">Sign out</a>
+          </li>
+          <!--end::Menu Footer-->
+        </ul>
+      </li>
+      <!--end::User Menu Dropdown-->
+    </ul>
+    <!--end::End Navbar Links-->
+  </div>
+  <!--end::Container-->
+</nav>
+<!--end::Header-->
+      <!--begin::Sidebar-->
+<aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+  <!--begin::Sidebar Brand-->
+  <div class="sidebar-brand">
+    <!--begin::Brand Link-->
+    <a href="./" class="brand-link">
+      <!--begin::Brand Image-->
+      <img src="./assets/img/AdminLTELogo.png" alt="TradingA Logo" class="brand-image opacity-75 shadow">
+      <!--end::Brand Image-->
+      <!--begin::Brand Text-->
+      <span class="brand-text fw-bold">TradingA</span>
+      <!--end::Brand Text-->
+    </a>
+    <!--end::Brand Link-->
+  </div>
+  <!--end::Sidebar Brand-->
+  <!--begin::Sidebar Search-->
+  <div class="sidebar-search" role="search">
+    <label for="sidebar-search-input" class="visually-hidden">Filter menu</label>
+    <input type="search" id="sidebar-search-input" class="form-control form-control-sm" placeholder="Filter menu…" autocomplete="off" data-lte-toggle="sidebar-search" data-lte-target="#navigation">
+    <p class="fs-7 text-secondary mt-2 mb-0" data-lte-search-empty role="status" hidden>
+      No matching pages.
+    </p>
+  </div>
+  <!--end::Sidebar Search-->
+  <!--begin::Sidebar Wrapper-->
+  <div class="sidebar-wrapper">
+    <nav class="mt-2" aria-label="Main navigation">
+      <!--begin::Sidebar Menu-->
+      <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" data-accordion="false" id="navigation">
+        <!-- Main Trading Navigation -->
+        <li class="nav-header">TRADING JOURNAL</li>
+        <li class="nav-item">
+          <a href="./" class="nav-link">
+            <i class="nav-icon bi bi-speedometer2"></i>
+            <p>Dashboard</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="./weekly-calendar.html" class="nav-link active">
+            <i class="nav-icon bi bi-calendar3"></i>
+            <p>Weekly Calendar</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="./reports.html" class="nav-link">
+            <i class="nav-icon bi bi-bar-chart-line"></i>
+            <p>Periodic Reports</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="./activity-calendar.html" class="nav-link">
+            <i class="nav-icon bi bi-calendar2-week"></i>
+            <p>Activity Calendar</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="./accounts.html" class="nav-link">
+            <i class="nav-icon bi bi-person-badge"></i>
+            <p>Trading Accounts</p>
+          </a>
+        </li>
+      </ul>
+      <!--end::Sidebar Menu-->
+    </nav>
+  </div>
+  <!--end::Sidebar Wrapper-->
+</aside>
+<!--end::Sidebar-->
+      <main class="app-main">
+        <div class="app-content-header">
+          <div class="container-fluid">
+            <div class="row align-items-center">
+              <div class="col-sm-6">
+                <h1 class="mb-0 fs-3">Weekly Trading Calendar</h1>
+              </div>
+              <div class="col-sm-6">
+                <div class="d-flex align-items-center justify-content-sm-end gap-2 mt-2 mt-sm-0">
+                  <!-- Account Selector (Multi-Profile) -->
+                  <div class="input-group input-group-sm" style="max-width: 250px;">
+                    <span class="input-group-text bg-primary text-white">
+                      <i class="bi bi-person-circle"></i>
+                    </span>
+                    <select class="form-select fw-semibold" id="account-selector" aria-label="Select Trading Account">
+                      <option value="00000000-0000-4000-8000-000000000001">Primary Account</option>
+                    </select>
+                  </div>
+                  <nav aria-label="Breadcrumb" class="d-none d-md-block">
+                    <ol class="breadcrumb mb-0">
+                      <li class="breadcrumb-item"><a href="./">Trading Journal</a></li>
+                      <li class="breadcrumb-item active" aria-current="page">Weekly Calendar</li>
+                    </ol>
+                  </nav>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="app-content">
+          <div class="container-fluid">
+            <div class="card shadow-sm border-0">
+              <div class="card-header bg-body border-bottom py-2">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+                  <!-- Weekly Toolbar (Date picker only, arrow buttons removed) -->
+                  <div class="d-flex align-items-center" id="calendar-header-toolbar">
+                    <div class="input-group input-group-sm w-auto shadow-xs">
+                      <span class="input-group-text bg-body text-secondary border-end-0">
+                        <i class="bi bi-calendar3"></i>
+                      </span>
+                      <input class="form-control form-control-sm border-start-0 fw-semibold" id="selected-date" type="date" aria-label="Select date in week" style="min-width: 160px;">
+                    </div>
+                  </div>
+
+                  <div class="d-flex align-items-center gap-2">
+                    <button type="button" class="btn btn-sm btn-outline-primary fw-semibold" id="btn-export-invoice">
+                      <i class="bi bi-file-earmark-pdf-fill text-danger me-1"></i> Export PDF Report
+                    </button>
+                    <div class="badge text-bg-light border px-3 py-2 fs-6 fw-bold text-primary" id="week-label" aria-live="polite"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-body">
+                <div class="journal-status small mb-2" id="status-message" role="status" aria-live="polite"></div>
+
+                <!-- WEEKLY TRADING CALENDAR (EXCEL/PDF TABLE STYLE) -->
+                <section id="calendar-view" aria-label="Weekly trading calendar">
+                  <div class="row g-3">
+                    <div class="col-12 col-xl-9 col-xxl-9">
+                      <div class="table-responsive w-100" tabindex="0" aria-label="Scrollable weekly trading calendar">
+                        <table class="table table-bordered align-middle text-center mb-2 shadow-sm w-100" style="table-layout: fixed;">
+                          <thead class="table-primary text-primary-emphasis">
+                            <tr>
+                              <th scope="col" style="width: 14.285%">Monday</th>
+                              <th scope="col" style="width: 14.285%">Tuesday</th>
+                              <th scope="col" style="width: 14.285%">Wednesday</th>
+                              <th scope="col" style="width: 14.285%">Thursday</th>
+                              <th scope="col" style="width: 14.285%">Friday</th>
+                              <th scope="col" style="width: 14.285%">Saturday</th>
+                              <th scope="col" style="width: 14.285%">Sunday</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr id="calendar-days"></tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="card journal-total-card mt-3 mb-0 shadow-sm">
+                        <div class="card-body py-2 d-flex justify-content-between align-items-center">
+                          <span class="fw-bold fs-6">Weekly Total Pips:</span>
+                          <strong id="week-total" class="fs-4">
+                            0.00
+                          </strong>
+                        </div>
+                      </div>
+                      <div class="mt-3">
+                        <label for="weekly-notes" class="form-label fw-semibold">
+                          Weekly Review &amp; Lessons
+                        </label>
+                        <textarea class="form-control" id="weekly-notes" rows="2" maxlength="2000" placeholder="Weekly trade reflections, psychological notes, key lessons learned..."></textarea>
+                        <div class="small text-body-secondary mt-1" id="review-status" aria-live="polite"></div>
+                      </div>
+                    </div>
+
+                    <!-- Right Column: Simple Tables with Progress Bars -->
+                    <aside class="col-12 col-xl-3 col-xxl-3" aria-label="Weekly statistics">
+                      <div class="card card-outline card-primary mb-0 shadow-sm">
+                        <div class="card-header bg-body">
+                          <h2 class="card-title fw-bold fs-5 text-primary">Weekly Stats</h2>
+                        </div>
+                        <div class="card-body p-0">
+                          <table class="table table-sm align-middle mb-0">
+                            <tbody>
+                              <tr>
+                                <td class="ps-3 py-2 text-secondary">Total Trades</td>
+                                <td class="pe-3 py-2 text-end fw-bold" data-stat="totalTrades">0</td>
+                              </tr>
+                              <tr>
+                                <td class="ps-3 py-2 text-secondary">Win / Loss</td>
+                                <td class="pe-3 py-2 text-end">
+                                  <span class="badge text-bg-success" data-stat="wins">0</span>
+                                  <span class="text-secondary mx-1">/</span>
+                                  <span class="badge text-bg-danger" data-stat="losses">0</span>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td class="ps-3 py-2 text-secondary">Break-even</td>
+                                <td class="pe-3 py-2 text-end fw-bold" data-stat="breakEven">0</td>
+                              </tr>
+                              <tr>
+                                <td class="ps-3 py-2 text-secondary">Win Rate</td>
+                                <td class="pe-3 py-2" style="width: 55%;">
+                                  <div class="d-flex align-items-center justify-content-end gap-2">
+                                    <div class="progress progress-xs flex-grow-1">
+                                      <div class="progress-bar bg-success" id="winrate-progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <span class="badge text-bg-primary" data-stat="winRate">0.00%</span>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td class="ps-3 py-2 text-secondary">Average Win</td>
+                                <td class="pe-3 py-2 text-end fw-bold text-success" data-stat="averageWin">—</td>
+                              </tr>
+                              <tr>
+                                <td class="ps-3 py-2 text-secondary">Average Loss</td>
+                                <td class="pe-3 py-2 text-end fw-bold text-danger" data-stat="averageLoss">—</td>
+                              </tr>
+                              <tr>
+                                <td class="ps-3 py-2 text-secondary">Payoff Ratio (R:R)</td>
+                                <td class="pe-3 py-2 text-end fw-bold" data-stat="payoffRatio">—</td>
+                              </tr>
+                              <tr>
+                                <td class="ps-3 py-2 text-secondary">Expectancy</td>
+                                <td class="pe-3 py-2 text-end fw-bold" data-stat="expectancy">0.00</td>
+                              </tr>
+                              <tr class="table-light border-top">
+                                <td class="ps-3 py-2 fw-bold text-primary">Weekly Net Pips</td>
+                                <td class="pe-3 py-2 text-end fw-bold fs-5" data-stat="netPips">0.00</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </aside>
+                  </div>
+                </section>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Printable Invoice Container (Export PDF directly without modal dialog) -->
+        <div class="d-none d-print-block" id="invoice-print-container">
+          <div class="p-4 bg-white text-dark" id="invoice-print-area">
+            <!-- Invoice Header -->
+            <div class="d-flex justify-content-between align-items-start border-bottom pb-3 mb-4">
+              <div>
+                <div class="d-flex align-items-center gap-2 mb-1">
+                  <span class="badge text-bg-primary fs-5 px-3 py-1 fw-bold">TRADING JOURNAL</span>
+                  <span class="text-secondary small fw-bold">WEEKLY PERFORMANCE STATEMENT</span>
+                </div>
+                <h2 class="fs-4 fw-bold mb-1 text-dark" id="inv-account-name">Primary Account</h2>
+                <div class="text-secondary small">
+                  Trading Period: <strong class="text-dark" id="inv-week-range">19/10/2026 – 25/10/2026</strong>
+                </div>
+              </div>
+              <div class="text-end">
+                <div class="text-secondary small">Report ID: <span class="font-monospace fw-semibold" id="inv-id">INV-20261023</span></div>
+                <div class="text-secondary small">Export Date: <span id="inv-date">23/10/2026 15:30</span></div>
+                <div class="mt-2">
+                  <span class="badge px-3 py-2 fs-6 fw-bold" id="inv-status-badge">PROFITABLE</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2 Side-by-side Tables (Matching User Request: Strictly WEEKLY TRADES & TRADING STATISTICS) -->
+            <div class="row g-4">
+              <!-- Weekly Trades Grid Table -->
+              <div class="col-12 col-lg-7">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h6 class="fw-bold text-uppercase text-secondary small mb-0">
+                    <i class="bi bi-table me-1"></i> WEEKLY TRADES
+                  </h6>
+                  <span class="small text-muted" id="inv-trade-count">0 trades</span>
+                </div>
+                <div class="table-responsive border rounded">
+                  <table class="table table-bordered table-sm align-middle mb-0 text-center" style="font-size: 0.88rem;" id="inv-trades-table">
+                    <thead class="table-light" id="inv-table-thead">
+                      <!-- Dynamically populated header -->
+                    </thead>
+                    <tbody id="inv-trades-tbody">
+                      <!-- Dynamically populated rows -->
+                    </tbody>
+                    <tfoot class="table-light fw-bold" id="inv-trades-tfoot">
+                      <!-- Weekly total -->
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Trading Statistics Table -->
+              <div class="col-12 col-lg-5">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h6 class="fw-bold text-uppercase text-secondary small mb-0">
+                    <i class="bi bi-graph-up me-1"></i> TRADING STATISTICS
+                  </h6>
+                </div>
+                <div class="table-responsive border rounded">
+                  <table class="table table-bordered table-sm align-middle mb-0" style="font-size: 0.88rem;">
+                    <thead class="table-light">
+                      <tr>
+                        <th scope="col" class="fw-bold">Metric</th>
+                        <th scope="col" class="text-end fw-bold" id="inv-stat-week-col">This Week</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Total Trades</td>
+                        <td class="text-end fw-bold" id="inv-stat-trades">0</td>
+                      </tr>
+                      <tr>
+                        <td>Win</td>
+                        <td class="text-end text-success fw-bold" id="inv-stat-wins">0</td>
+                      </tr>
+                      <tr>
+                        <td>Loss</td>
+                        <td class="text-end text-danger fw-bold" id="inv-stat-losses">0</td>
+                      </tr>
+                      <tr>
+                        <td>Break-even</td>
+                        <td class="text-end text-secondary fw-bold" id="inv-stat-be">0</td>
+                      </tr>
+                      <tr>
+                        <td>Average Win</td>
+                        <td class="text-end text-success fw-bold" id="inv-stat-avg-win">0.00</td>
+                      </tr>
+                      <tr>
+                        <td>Average Loss</td>
+                        <td class="text-end text-danger fw-bold" id="inv-stat-avg-loss">0.00</td>
+                      </tr>
+                      <tr>
+                        <td>Win Rate</td>
+                        <td class="text-end fw-bold" id="inv-stat-winrate">0.00%</td>
+                      </tr>
+                      <tr>
+                        <td>Payoff Ratio (R:R)</td>
+                        <td class="text-end fw-bold" id="inv-stat-payoff">0.00</td>
+                      </tr>
+                      <tr>
+                        <td>Expectancy</td>
+                        <td class="text-end fw-bold" id="inv-stat-expectancy">0.00</td>
+                      </tr>
+                      <tr class="table-light">
+                        <td class="fw-bold">Weekly Net Pips</td>
+                        <td class="text-end fw-bold fs-6" id="inv-stat-net">+0.00</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      <!--begin::Footer-->
+<footer class="app-footer">
+  <!--begin::To the end-->
+  <div class="float-end d-none d-sm-inline">Anything you want</div>
+  <!--end::To the end-->
+  <!--begin::Copyright-->
+  <strong>
+    Copyright &copy; 2014-2026&nbsp;
+    <a href="https://adminlte.io" class="text-decoration-none">AdminLTE.io</a>.
+  </strong>
+  All rights reserved.
+  <!--end::Copyright-->
+</footer>
+<!--end::Footer-->
+    </div>
+
+    <!--begin::Third Party Plugin(OverlayScrollbars)-->
+<script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.16.0/browser/overlayscrollbars.browser.es6.min.js" crossorigin="anonymous"></script>
+<!--end::Third Party Plugin(OverlayScrollbars)--><!--begin::Required Plugin(popperjs for Bootstrap 5)-->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+<!--end::Required Plugin(popperjs for Bootstrap 5)--><!--begin::Required Plugin(Bootstrap 5)-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
+<!--end::Required Plugin(Bootstrap 5)--><!--begin::Required Plugin(AdminLTE)-->
+<script src="./js/adminlte.js"></script>
+<!--end::Required Plugin(AdminLTE)-->
+<!--begin::OverlayScrollbars Configure-->
+<script>
+const SELECTOR_SIDEBAR_WRAPPER = ".sidebar-wrapper"
+const Default = {
+  scrollbarTheme: "os-theme-light",
+  scrollbarAutoHide: "leave",
+  scrollbarClickScroll: true
+}
+document.addEventListener("DOMContentLoaded", function () {
+  const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER)
+  
+  // Disable OverlayScrollbars on mobile devices to prevent touch interference
+  const isMobile = window.innerWidth <= 992
+  
+  if (
+    sidebarWrapper &&
+    globalThis.OverlayScrollbarsGlobal?.OverlayScrollbars !== undefined &&
+    !isMobile
+  ) {
+    OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+      scrollbars: {
+        theme: Default.scrollbarTheme,
+        autoHide: Default.scrollbarAutoHide,
+        clickScroll: Default.scrollbarClickScroll
+      }
+    })
+  }
+})
+</script>
+<!--end::OverlayScrollbars Configure-->
+
+
+<!--begin::Color Mode Toggle-->
+<!-- The light/dark/auto switcher ships in adminlte.js as the ColorMode
+     module (since 4.1) — no page script needed. Only the no-flash snippet
+     in <head> stays inline, because it must run before first paint. -->
+<!--end::Color Mode Toggle-->
+
+
+    <script type="module" src="/_astro/weekly-calendar.astro_astro_type_script_index_0_lang.limhYMAG.js"></script></body>
+</html>
